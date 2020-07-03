@@ -49,7 +49,8 @@
                 id: 1,
                 title: "Spaghetti Bolognese",
                 desc: "Ein Nudelgericht mit Hackfleischsoße.",
-                votes: 16,
+                upvotes: 16,
+                downvotes: 0,
                 author: "Italien",
                 image: "https://via.placeholder.com/64"
 
@@ -58,7 +59,8 @@
                 id: 2,
                 title: "Wiener Schnitzel",
                 desc: "Ein dünnes Schnitzel aus Kalbfleisch.",
-                votes: 5,
+                upvotes: 5,
+                downvotes: 0,
                 author: "Österreich",
                 image: "https://via.placeholder.com/64"
 
@@ -67,7 +69,8 @@
                 id: 3,
                 title: "Peking Ente",
                 desc: "Das kaiserliche Gericht.",
-                votes: 20,
+                upvotes: 20,
+                downvotes: 0,
                 author: "China",
                 image: "https://via.placeholder.com/64"
 
@@ -76,7 +79,8 @@
                 id: 4,
                 title: "Gulasch",
                 desc: "Ein traditionelles Ragout.",
-                votes: 24,
+                upvotes: 24,
+                downvotes: 0,
                 author: "Ungarn",
                 image: "https://via.placeholder.com/64"
 
@@ -85,7 +89,8 @@
                 id: 5,
                 title: "Döner",
                 desc: "Ein türkisches Gericht aus Berlin.",
-                votes: 28,
+                upvotes: 28,
+                downvotes: 0,
                 author: "Türkei",
                 image: "https://via.placeholder.com/64"
 
@@ -109,13 +114,22 @@
                     <img v-bind:src="entry.image" class="mr-3"> <!-- v-bind directive  bindet Attribute und einen Wert zuordnen -->
                     <div class="media-body">
                         <h5>
-                            {{ entry.title }}
+                            {{ entry.title }} ({{ votesDiff }})
+                            
+                            <span 
+                                class="float-right text-primary"
+                                style="cursor: pointer"
+                                v-on:click="downvote(entry.id)">
+                                <i class="far fa-thumbs-down ml-4"></i> <strong>{{ entry.downvotes }}</strong>
+                            </span>
+
                             <span 
                                 class="float-right text-primary"
                                 style="cursor: pointer"
                                 v-on:click="upvote(entry.id)">
-                                <i class="fa fa-chevron-up">{{ entry.votes }}</i>
+                                <i class="far fa-thumbs-up"></i> <strong>{{ entry.upvotes }}</strong>
                             </span>
+                           
                         </h5>
                         <div>
                             {{ entry.desc }}
@@ -124,10 +138,19 @@
                     </div>
                 </div>
             `,
+            computed: {
+                votesDiff () {
+                    return this.entry.upvotes - this.entry.downvotes
+                }
+            },
             methods: {
                 upvote(entryId) {
                     const entry = this.entries.find(entry => entry.id === entryId)
-                    entry.votes++
+                    entry.upvotes++
+                },
+                downvote(entryId) {
+                    const entry = this.entries.find(entry => entry.id === entryId)
+                    entry.downvotes++
                 }
             }
 
@@ -145,11 +168,11 @@
                 // Werden automatisch aktualisiert, wenn sich Daten in der Vue.js Anwendung ändern
                 sortedEntries() {
                     return this.entries.sort((a, b) => {
-                        return b.votes - a.votes
+                        return (b.upvotes- b.downvotes) - (a.upvotes - a.downvotes)
                     })
                 },
                 totalVotes () {
-                    return this.entries.reduce((totalVotes, entry) => totalVotes + entry.votes, 0)
+                    return this.entries.reduce((totalVotes, entry) => totalVotes + entry.upvotes + entry.downvotes, 0)
                 }
             }
         })
