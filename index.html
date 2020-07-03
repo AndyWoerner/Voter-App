@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!-- Bootstrap integrieren -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!-- Font Awesome integrieren -->
     <script src="https://kit.fontawesome.com/55d915acaf.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <div id="app">
         <div class="container">
@@ -20,8 +23,71 @@
                             <entry-component></entry-component>
                         </div>
                         <div class="card-body">
-                            <div class="media my-3"
-                                 v-for="entry in sortedEntries"> <!-- v-for directive wird benutzt um durchzuiterieren -->
+                            <div v-for="entry in sortedEntries">
+
+                                <entry-component v-bind:entry="entry" v-bind:entries="sortedEntries">
+                                </entry-component>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Einträge 
+        const entries = [{
+                id: 1,
+                title: "Spaghetti Bolognese",
+                desc: "Ein Nudelgericht mit Hackfleischsoße.",
+                votes: 16,
+                author: "Italien",
+                image: "https://via.placeholder.com/64"
+
+            },
+            {
+                id: 2,
+                title: "Wiener Schnitzel",
+                desc: "Ein dünnes Schnitzel aus Kalbfleisch.",
+                votes: 5,
+                author: "Österreich",
+                image: "https://via.placeholder.com/64"
+
+            },
+            {
+                id: 3,
+                title: "Peking Ente",
+                desc: "Das kaiserliche Gericht.",
+                votes: 20,
+                author: "China",
+                image: "https://via.placeholder.com/64"
+
+            },
+            {
+                id: 4,
+                title: "Gulasch",
+                desc: "Ein traditionelles Ragout.",
+                votes: 24,
+                author: "Ungarn",
+                image: "https://via.placeholder.com/64"
+
+            }
+        ]
+    </script>
+
+
+    <script src="https://unpkg.com/vue"></script>
+    <script>
+        Vue.component("entry-component", {
+            // Components 
+            // - Auslagern von wiederverwendbarem Code
+            // - Über props können Daten von einem Elternelement an ein Kindelement "weitergegeben" wrden
+
+            props: ["entry", "entries"],
+            template: `
+            <div class="media my-3">
                                 <img v-bind:src="entry.image" class="mr-3"> <!-- v-bind directive  bindet Attribute und einen Wert zuordnen -->
                                 <div class="media-body">
                                     <h5>
@@ -39,62 +105,13 @@
                                     <small class="text-muted">Eingereicht von: {{ entry.author }}</small>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Einträge 
-        const entries = [
-            {
-                id: 1,
-                title:"Spaghetti Bolognese",
-                desc:"Ein Nudelgericht mit Hackfleischsoße.",
-                votes: 16,
-                author: "Italien",
-                image: "https://via.placeholder.com/64"
-
-            },
-            {
-                id: 2,
-                title:"Wiener Schnitzel",
-                desc:"Ein dünnes Schnitzel aus Kalbfleisch.",
-                votes: 5,
-                author: "Österreich",
-                image: "https://via.placeholder.com/64"
-
-            },
-            {
-                id: 3,
-                title:"Peking Ente",
-                desc:"Das kaiserliche Gericht.",
-                votes: 20,
-                author: "China",
-                image: "https://via.placeholder.com/64"
-
-            },
-            {
-                id: 4,
-                title:"Gulasch",
-                desc:"Ein traditionelles Ragout.",
-                votes: 24,
-                author: "Ungarn",
-                image: "https://via.placeholder.com/64"
-
+            `,
+            methods: {
+                upvote(entryId) {
+                    const entry = this.entries.find(entry => entry.id === entryId)
+                    entry.votes++
+                }
             }
-        ]
-
-    </script>
-    
-
-    <script src="https://unpkg.com/vue"></script>
-    <script>
-        Vue.component("entry-component", {
-            //Optionen
-            template: "<p>Hallo, ich bin eine Komponente."
 
         })
 
@@ -104,20 +121,18 @@
             data: {
                 entries: entries
             },
-            computed: { // computed properties werden genutzt, wenn kompliziertere Berechnungen mit den Daten passieren müssen
-                sortedEntries () {
-                   return this.entries.sort((a,b) => {
+            computed: {
+                // computed properties werden genutzt, wenn kompliziertere Berechnungen mit den Daten passieren müssen
+                // Wenn Daten noch nicht in der Form vorliegen, wie sie im Template benutzt werden sollen
+                // Werden automatisch aktualisiert, wenn sich Daten in der Vue.js Anwendung ändern
+                sortedEntries() {
+                    return this.entries.sort((a, b) => {
                         return b.votes - a.votes
                     })
-                }
-            },
-            methods: {
-                upvote(entryId) {
-                    const entry = this.entries.find( entry => entry.id === entryId)
-                    entry.votes++
                 }
             }
         })
     </script>
 </body>
+
 </html>
