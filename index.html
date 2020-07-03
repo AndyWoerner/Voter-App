@@ -167,7 +167,7 @@
                 // Wenn Daten noch nicht in der Form vorliegen, wie sie im Template benutzt werden sollen
                 // Werden automatisch aktualisiert, wenn sich Daten in der Vue.js Anwendung ändern
                 sortedEntries() {
-                    return this.entries.sort((a, b) => {
+                    return this.entries.sort((a, b) => { // sortiert die Reihenfolge innerhalb des Arrays (in place und gibt das Array zurück)
                         return (b.upvotes- b.downvotes) - (a.upvotes - a.downvotes)
                     })
                 },
