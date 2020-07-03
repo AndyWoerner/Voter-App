@@ -5,31 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- Bootstrap integrieren -->
+    <!-- Bootstrap einbinden -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!-- Font Awesome integrieren -->
+    <!-- Font Awesome einbinden -->
     <script src="https://kit.fontawesome.com/55d915acaf.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div id="app">
+    <div id="app"> <!-- hierauf bezieht sich VUE -->
         <div class="container">
             <div class="row">
                 <div class="col-8 offset-2">
                     <div class="card mt-5">
+                        
                         <div class="card-header">
-                            <h2 class="card-title">Stimme jetzt ab!</h2>
-                            <entry-component></entry-component>
+                            <h2 class="card-title">Stimme jetzt ab!
+                                <span class="float-right"> {{ totalVotes }} Stimmen</span>
+                            </h2>   
+                            
                         </div>
+
                         <div class="card-body">
                             <div v-for="entry in sortedEntries">
 
-                                <entry-component v-bind:entry="entry" v-bind:entries="sortedEntries">
+                                <entry-component 
+                                    v-bind:entry="entry" 
+                                    v-bind:entries="sortedEntries">
                                 </entry-component>
 
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -73,13 +80,24 @@
                 author: "Ungarn",
                 image: "https://via.placeholder.com/64"
 
+            },
+            {
+                id: 5,
+                title: "Döner",
+                desc: "Ein türkisches Gericht aus Berlin.",
+                votes: 28,
+                author: "Türkei",
+                image: "https://via.placeholder.com/64"
+
             }
         ]
     </script>
 
-
+    <!-- VUE.js einbinden -->
     <script src="https://unpkg.com/vue"></script>
+    
     <script>
+        // Vue Komponente erzeugen, die auf das Tag <entry-component> hört.
         Vue.component("entry-component", {
             // Components 
             // - Auslagern von wiederverwendbarem Code
@@ -87,24 +105,24 @@
 
             props: ["entry", "entries"],
             template: `
-            <div class="media my-3">
-                                <img v-bind:src="entry.image" class="mr-3"> <!-- v-bind directive  bindet Attribute und einen Wert zuordnen -->
-                                <div class="media-body">
-                                    <h5>
-                                        {{ entry.title }}
-                                        <span 
-                                            class="float-right text-primary"
-                                            style="cursor: pointer"
-                                            v-on:click="upvote(entry.id)">
-                                            <i class="fa fa-chevron-up">{{ entry.votes }}</i>
-                                        </span>
-                                    </h5>
-                                    <div>
-                                        {{ entry.desc }}
-                                    </div>
-                                    <small class="text-muted">Eingereicht von: {{ entry.author }}</small>
-                                </div>
-                            </div>
+                <div class="media my-3">
+                    <img v-bind:src="entry.image" class="mr-3"> <!-- v-bind directive  bindet Attribute und einen Wert zuordnen -->
+                    <div class="media-body">
+                        <h5>
+                            {{ entry.title }}
+                            <span 
+                                class="float-right text-primary"
+                                style="cursor: pointer"
+                                v-on:click="upvote(entry.id)">
+                                <i class="fa fa-chevron-up">{{ entry.votes }}</i>
+                            </span>
+                        </h5>
+                        <div>
+                            {{ entry.desc }}
+                        </div>
+                        <small class="text-muted">Eingereicht von: {{ entry.author }}</small>
+                    </div>
+                </div>
             `,
             methods: {
                 upvote(entryId) {
@@ -129,6 +147,9 @@
                     return this.entries.sort((a, b) => {
                         return b.votes - a.votes
                     })
+                },
+                totalVotes () {
+                    return this.entries.reduce((totalVotes, entry) => totalVotes + entry.votes, 0)
                 }
             }
         })
